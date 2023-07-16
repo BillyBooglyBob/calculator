@@ -115,9 +115,33 @@ buttons.forEach((button) => {
     }
 })
 
+// Add in keyboard support
+document.addEventListener("keydown", (e) => {
+    if (numbers.includes(e.key)) {
+        setEquation(e.key);
+    } else if (operators.includes(e.key)) {
+            setEquation(e.key);
+    } else if (e.key === '*') {
+        setEquation("x");
+        console.log("MULTIPLY")
+    } else if (e.key === "/") {
+        setEquation("÷");
+    } else if (e.key === "Enter" || e.key === "=") {
+        setEquation("=");
+    } else if (e.key === "Escape") {
+        clear();
+    } else if (e.key === "Backspace") {
+        deleteFromEquation();
+    }
+})
 
-function setEquation() {
-    const currentValue = this.textContent;
+function setEquation(value) {
+    let currentValue;
+    if (this.textContent === undefined) {
+        currentValue = value;
+    } else {
+        currentValue = this.textContent;
+    }    
     const action = determineVariableToModify(currentValue);
 
     switch (action) {
@@ -187,7 +211,7 @@ function determineVariableToModify (currentValue) {
     return variableToModify;
 }
 
-let numberEditing;  // used for deciding which variable to delete from 
+let numberEditing = "operand1";  // used for deciding which variable to delete from 
 
 function getOutput(execution_operator, next_operator) {
     // if equation ends in operator, ignore that operator
@@ -241,12 +265,13 @@ function updateEquation() {
 // delete from the equation
 function deleteFromEquation() {
     // always deletes the output, 
-    if (numberEditing === "operand1") {
+    if (numberEditing === "operand1" && operand1 !== "0") {
         operand1 = operand1.slice(0, -1);
         output.textContent = operand1;
+        updateEquation()
     } else if (numberEditing === "operand2") {
         operand2 = operand2.slice(0, -1);
         output.textContent = operand2;
+        updateEquation()
     }
-    updateEquation()
 }
