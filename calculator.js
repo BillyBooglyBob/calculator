@@ -235,7 +235,7 @@ function getOutput(execution_operator) {
         output.textContent = `${operand1}`;
     } else if (execution_operator === "operand2") {
         equation.textContent = `${operand1} ${operator} ${operand2}`;
-        output.textContent = `${operand1}`;
+        output.textContent = `${operand2}`;
     } else if (execution_operator === "normalOperator") {
         equation.textContent = `${operand1} ${operator} ${operand2}`;
     }
