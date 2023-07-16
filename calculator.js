@@ -51,7 +51,6 @@ let operand2 = "";
 let operator = "";
 
 // execute operation based on the values
-// round the values
 function operate(operand1, operand2, operator) {
     let result;
     operand1 = parseFloat(operand1);
@@ -84,7 +83,6 @@ const equation = document.querySelector(".equation");
 const output = document.querySelector(".output");
 
 
-// CSS STYLING
 // add hover effect to all the buttons
 // add event listeners to all the buttons
 const buttons = document.querySelectorAll('button');
@@ -117,13 +115,8 @@ buttons.forEach((button) => {
     }
 })
 
-function setEquation() {
-    // if value is a number and operand1 is the default 0 replace the default operand1
-    // if value is a number and operand1 is not 0 & operator is "", append to operand 1
-    // if value is an operator set operator to it 
-    // if value is a number and operator is not "", make it operand 2
-        // append if more
 
+function setEquation() {
     const currentValue = this.textContent;
     const action = determineVariableToModify(currentValue);
 
@@ -134,13 +127,17 @@ function setEquation() {
             break;
 
         case "operand1":
-            operand1 += currentValue;
-            getOutput("operand1");
+            if (operand1.length < 22) {
+                operand1 += currentValue;
+                getOutput("operand1");
+            }
             break;
 
         case "operand2":
-            operand2 += currentValue;
-            getOutput("operand2");
+            if (operand2.length < 22) {
+                operand2 += currentValue;
+                getOutput("operand2");
+            }
             break;
 
         case "operator":
@@ -149,24 +146,16 @@ function setEquation() {
             break;
 
         case "getOuput(operator)":
-            getOutput(operator);
+            getOutput(operator, currentValue);
             break;
 
         case "getOutput('=')":
             getOutput('=');
             break;
     }
-
-    
-
-    // store the equation as an array, turn it into string when needed 
-    // output.textContent = 
-
-    // operate needs to have different effect depending on if it is triggered by operator or by = 
-    // if by operator, make operand1 the result, display e.g. operand 1 & operator 
-    // if by =, make operand1 the result as well, but 
 }
 
+// determine which variable to modify based on the button pressed
 function determineVariableToModify (currentValue) {
     let variableToModify;
 
@@ -180,19 +169,6 @@ function determineVariableToModify (currentValue) {
                 if (!operand1.includes(".") || currentValue !== ".") variableToModify = "operand1"
             }
         }
-
-        // if (operand1 === "0") {  // replace default value
-        //     variableToModify = "operand1Replace";
-
-
-        // } else if (operand1 !== "0" && operator === "") {
-        //     if (!operand1.includes(".") || currentValue !== ".") variableToModify = "operand1"; 
-
-
-
-        // } else if (operator !== "") {
-        //     if (!operand2.includes(".") || currentValue !== ".") variableToModify = "operand2";
-        // }
     } else if (operators.includes(currentValue)) {
         if (!operators.includes(operator)) {
             variableToModify = "operator";
@@ -206,15 +182,14 @@ function determineVariableToModify (currentValue) {
         if (lastChar !== "=" && (operator !== "" && operand2 !== "")) {
             variableToModify = "getOutput('=')"; 
         }
-
     }
 
     return variableToModify;
 }
 
-let numberEditing;
+let numberEditing;  // used for deciding which variable to delete from 
 
-function getOutput(execution_operator) {
+function getOutput(execution_operator, next_operator) {
     // if equation ends in operator, ignore that operator
     // if you encounter .1, treat it as normal number
     let result = operate(operand1, operand2, operator);
@@ -228,19 +203,21 @@ function getOutput(execution_operator) {
     } else if (operators.includes(execution_operator)) { // what to output if outputting with operator
         operand1 = result.toString();
         operand2 = "";
-        operator = "";
+        operator = next_operator;
 
         updateEquation()
         output.textContent = result;
-    } else if (execution_operator === "operand1") {
-        updateEquation()
-        output.textContent = `${operand1}`;
-        numberEditing = "operand1"; 
-
-    } else if (execution_operator === "operand2") {
-        updateEquation()
-        output.textContent = `${operand2}`;
-        numberEditing = "operand2";
+    } else if (execution_operator === "operand1" || execution_operator === "operand2") {
+        if (execution_operator === "operand1") {
+            updateEquation()
+            output.textContent = `${operand1}`;
+            numberEditing = "operand1"; 
+    
+        } else if (execution_operator === "operand2") {
+            updateEquation()
+            output.textContent = `${operand2}`;
+            numberEditing = "operand2";
+        }
     } else if (execution_operator === "normalOperator") {
         updateEquation()
     }
@@ -256,6 +233,7 @@ function clear() {
     equation.textContent = "";
 }
 
+// update the equation with current values
 function updateEquation() {
     equation.textContent = `${operand1} ${operator} ${operand2}`;
 }
