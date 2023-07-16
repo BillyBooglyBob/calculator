@@ -123,48 +123,101 @@ function setEquation() {
     // if value is an operator set operator to it 
     // if value is a number and operator is not "", make it operand 2
         // append if more
+
     const currentValue = this.textContent;
-    if (numbers.includes(currentValue)) {
-        if (operand1 === "0") {
+    const action = determineVariableToModify(currentValue);
+
+    switch (action) {
+        case "operand1Replace":
             operand1 = currentValue;
-        } else if (operand1 !== "0" && operator === "") {
-            if (!operand1.includes(".")) operand1 += currentValue;
-        } else if (operator !== "") {
-            if (!operand2.includes(".")) operand2 += currentValue;
-        }
-    } else if (operators.includes(currentValue)) {
-        // if no operator is declared
-        if (!operators.includes(operator)) {
-            operator = currentValue
-        } else if (operand2 !== "") {
+            getOutput("operand1");
+            break;
+
+        case "operand1":
+            operand1 += currentValue;
+            getOutput("operand1");
+            break;
+
+        case "operand2":
+            operand2 += currentValue;
+            getOutput("operand2");
+            break;
+
+        case "operator":
+            operator = currentValue;
+            getOutput("normalOperator");
+            break;
+
+        case "getOuput(operator)":
             getOutput(operator);
-        }// if operator is declared and operand2 is not null than operate 
-    } else if (currentValue === "=") {
-        getOutput("=");
+            break;
+
+        case "getOutput('=')":
+            getOutput('=');
+            break;
     }
+
+    
+
     // store the equation as an array, turn it into string when needed 
-    equation.textContent = `${operand1} ${operator} ${operand2}`;
+    // output.textContent = 
+
     // operate needs to have different effect depending on if it is triggered by operator or by = 
     // if by operator, make operand1 the result, display e.g. operand 1 & operator 
     // if by =, make operand1 the result as well, but 
 }
 
+function determineVariableToModify (currentValue) {
+    let variableToModify;
+
+    if (numbers.includes(currentValue)) {
+        if (operand1 === "0") {
+            variableToModify = "operand1Replace";
+        } else if (operand1 !== "0" && operator === "") {
+            if (!operand1.includes(".")) variableToModify = "operand1";
+        } else if (operator !== "") {
+            if (!operand2.includes(".")) variableToModify = "operand2";
+        }
+    } else if (operators.includes(currentValue)) {
+        // if no operator is declared
+        if (!operators.includes(operator)) {
+            variableToModify = "operator";
+        } else if (operand2 !== "") {
+            variableToModify = "getOuput(operator)";
+        }// if operator is declared and operand2 is not null than operate 
+    } else if (currentValue === "=") {
+        variableToModify = "getOutput('=')";
+    }
+
+    return variableToModify;
+}
+
 function getOutput(execution_operator) {
     // if equation ends in operator, ignore that operator
     // if you encounter .1, treat it as normal number
-    let result = operate(operand1, operand2, operator);
+    let result = operate(operand1, operand2, operator); // what to do if outputting with =
     if (execution_operator === "=") {
         equation.textContent = `${operand1} ${operator} ${operand2} =`;
         output.textContent = result;
 
-        operand1 = toString(result);
-        operand2 = ""
-    } else {
-        operand1 = toString(result);
-        operand2 = ""
+        operand1 = result.toString();
+        operand2 = "";
+        operator = "";
+    } else if (operators.includes(execution_operator)) { // what to output if outputting with operator
+        operand1 = result.toString();
+        operand2 = "";
+        operator = "";
 
         equation.textContent = `${operand1} ${operator}`;
         output.textContent = result;
+    } else if (execution_operator === "operand1") {
+        equation.textContent = `${operand1} ${operator} ${operand2}`;
+        output.textContent = `${operand1}`;
+    } else if (execution_operator === "operand2") {
+        equation.textContent = `${operand1} ${operator} ${operand2}`;
+        output.textContent = `${operand1}`;
+    } else if (execution_operator === "normalOperator") {
+        equation.textContent = `${operand1} ${operator} ${operand2}`;
     }
 
 
@@ -182,7 +235,7 @@ function clear() {
 // update the display
 function updateDisplay() {
     equation.textContent = `${operand1} ${operator} ${operand2}`;
-    output.textContent = "";
+    output.textContent = "0";
 }
 
 // delete from the equation
