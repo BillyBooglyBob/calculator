@@ -1,0 +1,130 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 5%;
+
+    width: 25%;
+    height: 80%;
+    background-color: black;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+/* display */
+.display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+
+    height: auto;
+    border-radius: 10px;
+    color: white;
+    background-color: #454443;
+
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.equation,
+.output {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+
+    width: 80%;
+    padding-left: 5%;
+    padding-right: 5%;
+    font-family: sans-serif;
+}
+
+.equation {
+    font-size: 30x;
+}
+
+.output {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+/* buttons */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    gap: 10px;
+}
+
+.r1,
+.r2,
+.r3,
+.r4,
+.r5 {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+}
+
+button {
+    flex: 1;
+    border-radius: 10px;
+
+    color: #c8cdcf;
+    background-color: #787d80;
+    font-size: 25px;
+}
+
+/* hover & active effects */
+/* numbers */
+.numbers:hover {
+    background-color: darkgrey;
+}
+
+.numbers:active {
+    background-color: rgb(121, 119, 125);
+}
+
+/* operators */
+.operators:hover {
+    background-color: #32a846;
+}
+
+.operators:active {
+    background-color: #35942e;
+}
+
+/* clear * delete */
+.clear-delete:hover {
+    background-color: #d6463c;
+}
+
+.clear-delete:active {
+    background-color: #962a2a;
+}
+
+/* equal */
+.equal:hover {
+    background-color: #43c7cc;
+}
+
+.equal:active {
+    background-color: #43a8cc;
+}
