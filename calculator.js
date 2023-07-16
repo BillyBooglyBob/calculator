@@ -212,6 +212,8 @@ function determineVariableToModify (currentValue) {
     return variableToModify;
 }
 
+let numberEditing;
+
 function getOutput(execution_operator) {
     // if equation ends in operator, ignore that operator
     // if you encounter .1, treat it as normal number
@@ -228,16 +230,19 @@ function getOutput(execution_operator) {
         operand2 = "";
         operator = "";
 
-        equation.textContent = `${operand1} ${operator}`;
+        updateEquation()
         output.textContent = result;
     } else if (execution_operator === "operand1") {
-        equation.textContent = `${operand1} ${operator} ${operand2}`;
+        updateEquation()
         output.textContent = `${operand1}`;
+        numberEditing = "operand1"; 
+
     } else if (execution_operator === "operand2") {
-        equation.textContent = `${operand1} ${operator} ${operand2}`;
+        updateEquation()
         output.textContent = `${operand2}`;
+        numberEditing = "operand2";
     } else if (execution_operator === "normalOperator") {
-        equation.textContent = `${operand1} ${operator} ${operand2}`;
+        updateEquation()
     }
 
 }
@@ -247,16 +252,23 @@ function clear() {
     operand1 = "0";
     operand2 = "";
     operator = "";
-    updateDisplay();
-}
-
-// update the display
-function updateDisplay() {
     output.textContent = "0";
     equation.textContent = "";
 }
 
+function updateEquation() {
+    equation.textContent = `${operand1} ${operator} ${operand2}`;
+}
+
 // delete from the equation
 function deleteFromEquation() {
-    
+    // always deletes the output, 
+    if (numberEditing === "operand1") {
+        operand1 = operand1.slice(0, -1);
+        output.textContent = operand1;
+    } else if (numberEditing === "operand2") {
+        operand2 = operand2.slice(0, -1);
+        output.textContent = operand2;
+    }
+    updateEquation()
 }
