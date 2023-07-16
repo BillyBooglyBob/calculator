@@ -55,7 +55,7 @@ let operator = "";
 function operate(operand1, operand2, operator) {
     let result;
     operand1 = parseFloat(operand1);
-    operand2 = parseInt(operand2);
+    operand2 = parseFloat(operand2);
 
     switch (operator) {
         case "+":
@@ -66,11 +66,11 @@ function operate(operand1, operand2, operator) {
             result = minus(operand1, operand2);
             break;
 
-        case "*":
+        case "x":
             result = times(operand1, operand2);
             break;
         
-        case "/":
+        case "÷":
             result = divide(operand1, operand2);
             break;
     }
@@ -170,23 +170,43 @@ function setEquation() {
 function determineVariableToModify (currentValue) {
     let variableToModify;
 
-    if (numbers.includes(currentValue)) {
-        if (operand1 === "0") {
-            variableToModify = "operand1Replace";
-        } else if (operand1 !== "0" && operator === "") {
-            if (!operand1.includes(".")) variableToModify = "operand1";
-        } else if (operator !== "") {
-            if (!operand2.includes(".")) variableToModify = "operand2";
+    if (numbers.includes(currentValue)) { 
+        if (operator !== "") {  // if operator is present, only allowed to modify operand2
+            if (!operand2.includes(".") || currentValue !== ".") variableToModify = "operand2"
+        } else {  // if operator not present, modify operand1, replace 0 if it is present 
+            if (operand1 === "0") {  // replace default value
+                variableToModify = "operand1Replace";
+            } else {
+                if (!operand1.includes(".") || currentValue !== ".") variableToModify = "operand1"
+            }
         }
+
+        // if (operand1 === "0") {  // replace default value
+        //     variableToModify = "operand1Replace";
+
+
+        // } else if (operand1 !== "0" && operator === "") {
+        //     if (!operand1.includes(".") || currentValue !== ".") variableToModify = "operand1"; 
+
+
+
+        // } else if (operator !== "") {
+        //     if (!operand2.includes(".") || currentValue !== ".") variableToModify = "operand2";
+        // }
     } else if (operators.includes(currentValue)) {
-        // if no operator is declared
         if (!operators.includes(operator)) {
             variableToModify = "operator";
         } else if (operand2 !== "") {
             variableToModify = "getOuput(operator)";
-        }// if operator is declared and operand2 is not null than operate 
+        }
     } else if (currentValue === "=") {
-        variableToModify = "getOutput('=')";
+        const currentOutput = equation.textContent;
+        const currentOutputArray = Array.from(currentOutput);
+        const lastChar = currentOutputArray[currentOutputArray.length - 1];
+        if (lastChar !== "=" && (operator !== "" && operand2 !== "")) {
+            variableToModify = "getOutput('=')"; 
+        }
+
     }
 
     return variableToModify;
@@ -195,7 +215,7 @@ function determineVariableToModify (currentValue) {
 function getOutput(execution_operator) {
     // if equation ends in operator, ignore that operator
     // if you encounter .1, treat it as normal number
-    let result = operate(operand1, operand2, operator); // what to do if outputting with =
+    let result = operate(operand1, operand2, operator);
     if (execution_operator === "=") {
         equation.textContent = `${operand1} ${operator} ${operand2} =`;
         output.textContent = result;
@@ -220,13 +240,11 @@ function getOutput(execution_operator) {
         equation.textContent = `${operand1} ${operator} ${operand2}`;
     }
 
-
-
 }
 
 // remove all the displayed values
 function clear() {
-    operand1 = "";
+    operand1 = "0";
     operand2 = "";
     operator = "";
     updateDisplay();
@@ -234,8 +252,8 @@ function clear() {
 
 // update the display
 function updateDisplay() {
-    equation.textContent = `${operand1} ${operator} ${operand2}`;
     output.textContent = "0";
+    equation.textContent = "";
 }
 
 // delete from the equation
