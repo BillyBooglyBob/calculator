@@ -1,4 +1,5 @@
 /* 
+PSEUDOCODE
 take inputs from the user via the buttons 
 user can press numbers or operators and press = to execute it 
 can enter multiple numbers & operators (so something like 1 + 2 + 3 + 4)
@@ -16,10 +17,9 @@ add buttons click effect (darken * 2)
 JS
 create all the basic operations (+, -, *, /)
     take two numbers and output a value
-    when maths errors occur alert them they are stupid
 round the output before displaying on screen 
 
-store three differne inputs, two are numbers one is the operator.
+store three different inputs, two are numbers and one is the operator.
 store num1 first, then operator, then num2 
     run the operation using the values, returned value becomes num1 
     now can take another operator and num2 and repeat the process
@@ -87,10 +87,12 @@ const output = document.querySelector(".output");
 // add event listeners to all the buttons
 const buttons = document.querySelectorAll('button');
 
+// create a list of numbers as strings
 let numbers = ["."];
 for (let i = 0; i < 10; i++) {
     numbers.push(i.toString());
 };
+
 const operators = ["+", "-", "x", "÷"];
 
 buttons.forEach((button) => {
@@ -135,8 +137,12 @@ document.addEventListener("keydown", (e) => {
     }
 })
 
+
+// used to decide what values to 
 function setEquation(value) {
     let currentValue;
+
+    // section added for keyboard support
     if (this.textContent === undefined) {
         currentValue = value;
     } else {
@@ -182,27 +188,36 @@ function setEquation(value) {
 // determine which variable to modify based on the button pressed
 function determineVariableToModify (currentValue) {
     let variableToModify;
-
+    
+    // what to do if the value entered is a number
     if (numbers.includes(currentValue)) { 
         if (operator !== "") {  // if operator is present, only allowed to modify operand2
             if (!operand2.includes(".") || currentValue !== ".") variableToModify = "operand2"
         } else {  // if operator not present, modify operand1, replace 0 if it is present 
-            if (operand1 === "0") {  // replace default value
+            if (operand1 === "0") {
                 variableToModify = "operand1Replace";
             } else {
                 if (!operand1.includes(".") || currentValue !== ".") variableToModify = "operand1"
             }
         }
+    // what to do if the value entered is an operator
     } else if (operators.includes(currentValue)) {
+        // store the current operator
         if (!operators.includes(operator)) {
             variableToModify = "operator";
-        } else if (operand2 !== "") {
+        // allows for consecutive operation with only operators,
+        // without needing to press = each time
+        } else if (operand2 !== "") {  
             variableToModify = "getOuput(operator)";
         }
+    // what to do if the value entered is =
     } else if (currentValue === "=") {
         const currentOutput = equation.textContent;
+
+        // get the last character of the output
         const currentOutputArray = Array.from(currentOutput);
         const lastChar = currentOutputArray[currentOutputArray.length - 1];
+        // only execute operation if operands are not empty and there isn't an = 
         if (lastChar !== "=" && (operator !== "" && operand2 !== "")) {
             variableToModify = "getOutput('=')"; 
         }
@@ -211,12 +226,14 @@ function determineVariableToModify (currentValue) {
     return variableToModify;
 }
 
-let numberEditing = "operand1";  // used for deciding which variable to delete from 
+// used for deciding which variable to delete from
+let numberEditing = "operand1";   
 
+// update the outputs in the display of the calculator
 function getOutput(execution_operator, next_operator) {
-    // if equation ends in operator, ignore that operator
-    // if you encounter .1, treat it as normal number
     let result = operate(operand1, operand2, operator);
+
+    // update output when = is used
     if (execution_operator === "=") {
         equation.textContent = `${operand1} ${operator} ${operand2} =`;
         output.textContent = result;
@@ -224,13 +241,17 @@ function getOutput(execution_operator, next_operator) {
         operand1 = result.toString();
         operand2 = "";
         operator = "";
-    } else if (operators.includes(execution_operator)) { // what to output if outputting with operator
+
+    // update output when doing consecutive operations with operators
+    } else if (operators.includes(execution_operator)) { 
         operand1 = result.toString();
         operand2 = "";
         operator = next_operator;
 
         updateEquation()
         output.textContent = result;
+    
+    // update screen when numbers are entered
     } else if (execution_operator === "operand1" || execution_operator === "operand2") {
         if (execution_operator === "operand1") {
             updateEquation()
@@ -242,6 +263,7 @@ function getOutput(execution_operator, next_operator) {
             output.textContent = `${operand2}`;
             numberEditing = "operand2";
         }
+    // adding operator to the equation
     } else if (execution_operator === "normalOperator") {
         updateEquation()
     }
@@ -250,7 +272,7 @@ function getOutput(execution_operator, next_operator) {
 
 // remove all the displayed values
 function clear() {
-    operand1 = "0";
+    operand1 = "0";  // provide a default value of 0
     operand2 = "";
     operator = "";
     output.textContent = "0";
@@ -264,7 +286,7 @@ function updateEquation() {
 
 // delete from the equation
 function deleteFromEquation() {
-    // always deletes the output, 
+    // delete from the numbers
     if (numberEditing === "operand1" && operand1 !== "0") {
         operand1 = operand1.slice(0, -1);
         output.textContent = operand1;
