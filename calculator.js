@@ -87,7 +87,8 @@ const output = document.querySelector(".output");
 // add event listeners to all the buttons
 const buttons = document.querySelectorAll('button');
 
-// create a list of numbers as strings
+// create a list of numbers as strings, used as the textContent of number 
+// buttons are strings 
 let numbers = ["."];
 for (let i = 0; i < 10; i++) {
     numbers.push(i.toString());
@@ -138,7 +139,7 @@ document.addEventListener("keydown", (e) => {
 })
 
 
-// used to decide what values to 
+// decide what action to take for each button press
 function setEquation(value) {
     let currentValue;
 
